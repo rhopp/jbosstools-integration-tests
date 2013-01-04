@@ -25,7 +25,7 @@ import org.junit.Test;
 
 
 //TODO When testing new build try it with type=ServerType.EAP !!!!
-@Require(clearProjects=false,server=@org.jboss.tools.ui.bot.ext.config.Annotations.Server(type=ServerType.ALL))
+@Require(clearProjects=false,server=@org.jboss.tools.ui.bot.ext.config.Annotations.Server(type=ServerType.EAP))
 public class CreateProjectsWithServerTest extends SWTTestExt{
 	
 	@BeforeClass
@@ -141,7 +141,7 @@ public class CreateProjectsWithServerTest extends SWTTestExt{
 	
 	@Test
 	public void createProjectSectionJavaEEProjectTest(){
-		checkExample(null, IDELabel.JBossCentralEditor.JAVA_EE_PROJECT, true);
+		checkExample(null, "Java EE Project", true);
 		canBeDeployedTest();
 	}
 	
@@ -164,18 +164,18 @@ public class CreateProjectsWithServerTest extends SWTTestExt{
 	}
 	
 	public void projectExamplesSectionTest(String name, String projectName, String readmeFile){
-		SWTBotTwistie jBossQuickstartsTwistie = bot.twistieByLabel("JBoss Developer Framework Quickstarts");
+		SWTBotTwistie jBossQuickstartsTwistie = bot.twistieByLabel("JBoss Quickstarts");
 		int counter = 0;
 		while (!jBossQuickstartsTwistie.isExpanded() && counter<10){
 			jBossQuickstartsTwistie.toggle();
 			counter++;
 		}
-		SWTBotTwistie geteinQuickstartsTwistie = bot.twistieByLabel("GateIn Portal Quickstarts");
-		 counter = 0;
-		while (!geteinQuickstartsTwistie.isExpanded() && counter<10){
-			geteinQuickstartsTwistie.toggle();
-			counter++;
-		}
+//		SWTBotTwistie geteinQuickstartsTwistie = bot.twistieByLabel("GateIn Portal Quickstarts");
+//		 counter = 0;
+//		while (!geteinQuickstartsTwistie.isExpanded() && counter<10){
+//			geteinQuickstartsTwistie.toggle();
+//			counter++;
+//		}
 		SWTFormsBotExt formsBot = SWTBotFactory.getFormsBot();
 		if (readmeFile == null){
 			checkExample(formsBot, name, true, projectName);
@@ -191,63 +191,63 @@ public class CreateProjectsWithServerTest extends SWTTestExt{
 	
 	@Test
 	public void projectExamplesSectionHelloworldTest(){
-		projectExamplesSectionTest("Hello World", "jboss-as-helloworld");
+		projectExamplesSectionTest("Helloworld", "jboss-as-helloworld");
 	}
 	
-//	JBIDE-13102 @Test
+	@Test
 	public void projectExamplesSectionHelloworldJSFTest(){
-		projectExamplesSectionTest("Hello World JSF", "jboss-as-helloworld-jsf");
+		projectExamplesSectionTest("Login", "jboss-as-login");
 	}
 	
 	@Test
 	public void projectExamplesSectionHelloworldJMSTest(){
-		projectExamplesSectionTest("Hello World JMS", "jboss-as-helloworld-jms");
+		projectExamplesSectionTest("Numberguess", "jboss-as-numberguess");
 	}
 	
 	@Test
 	public void projectExamplesSectionHelloworldErraiTest(){
-		projectExamplesSectionTest("Hello World Errai", "jboss-as-helloworld-errai");
+		projectExamplesSectionTest("Kitchensink", "jboss-as-kitchensink");
 	}
 	
 	@Test
 	public void projectExamplesSectionHelloworldOsgiTest(){
-		projectExamplesSectionTest("Hello World OSGi", "jboss-as-helloworld-osgi");
+		projectExamplesSectionTest("HTML5", "helloworld-html5");
 	}
 	
-	@Test 
-	public void projectExamplesSectionNumberguessTest(){
-		projectExamplesSectionTest("Number Guess", "jboss-as-numberguess");
-	}
-	
-	@Test
-	public void projectExamplesSectionKitchensinkTest(){
-		projectExamplesSectionTest("Kitchensink", "kitchensink");
-	}
-	
-	@Test
-	public void projectExamplesSectionGreeterTest(){
-		projectExamplesSectionTest("Greeter", "jboss-as-greeter");
-	}
-	
-	@Test
-	public void projectExamplesSectionHelloworldPortletTest(){
-		projectExamplesSectionTest("Simplest Hello World Portlet", "simplest-hello-world-portlet");
-	}
-	
-	@Test
-	public void projectExamplesSectionJSF2HelloworldTest(){
-		projectExamplesSectionTest("JSF2 Hello World Portlet", "jsf2-hello-world-portlet");
-	}
-	
-	@Test
-	public void projectExamplesSectionJSF2RF4HelloworldTest(){
-		projectExamplesSectionTest("JSF2+RF4 Hello World Portlet", "jsf2-rf4-hello-world-portlet");
-	}
-	
-	@Test
-	public void projectExamplesSectionHTML5Test(){
-		projectExamplesSectionTest("AeroGear HTML5/Mobile", "jboss-as-kitchensink-html5-mobile");
-	}
+//	@Test 
+//	public void projectExamplesSectionNumberguessTest(){
+//		projectExamplesSectionTest("Number Guess", "jboss-as-numberguess");
+//	}
+//	
+//	@Test
+//	public void projectExamplesSectionKitchensinkTest(){
+//		projectExamplesSectionTest("Kitchensink", "kitchensink");
+//	}
+//	
+//	@Test
+//	public void projectExamplesSectionGreeterTest(){
+//		projectExamplesSectionTest("Greeter", "jboss-as-greeter");
+//	}
+//	
+//	@Test
+//	public void projectExamplesSectionHelloworldPortletTest(){
+//		projectExamplesSectionTest("Simplest Hello World Portlet", "simplest-hello-world-portlet");
+//	}
+//	
+//	@Test
+//	public void projectExamplesSectionJSF2HelloworldTest(){
+//		projectExamplesSectionTest("JSF2 Hello World Portlet", "jsf2-hello-world-portlet");
+//	}
+//	
+//	@Test
+//	public void projectExamplesSectionJSF2RF4HelloworldTest(){
+//		projectExamplesSectionTest("JSF2+RF4 Hello World Portlet", "jsf2-rf4-hello-world-portlet");
+//	}
+//	
+//	@Test
+//	public void projectExamplesSectionHTML5Test(){
+//		projectExamplesSectionTest("AeroGear HTML5/Mobile", "jboss-as-kitchensink-html5-mobile");
+//	}
 	
 	/**
 	 * Tries to deploy all imported projects
@@ -344,7 +344,8 @@ public class CreateProjectsWithServerTest extends SWTTestExt{
 		bot.waitForShell(IDELabel.JBossCentralEditor.PROJECT_EXAMPLE);
 		SWTBotWizard wizard = new SWTBotWizard(bot.shell(IDELabel.JBossCentralEditor.PROJECT_EXAMPLE).widget);
 		if (formsBot == null){
-			bot.comboBox(0).setSelection(1); //Target runtime combobox
+			wizard.next();
+			bot.comboBox(2).setSelection(1); //Target runtime combobox
 			try{
 				bot.link();
 				fail("There is something wrong with maven repo. Message: \n"+bot.link().getText());
@@ -352,7 +353,6 @@ public class CreateProjectsWithServerTest extends SWTTestExt{
 				//everything fine
 			}
 			//bot.checkBox(0); //Create a blank project checkbox
-			wizard.next();
 			bot.comboBox().setText(formText.replaceAll("\\s", ""));
 			if (wizard.canNext()) wizard.next();
 			wizard.finishWithWait();
