@@ -25,7 +25,7 @@ import org.junit.Test;
 
 
 //TODO When testing new build try it with type=ServerType.EAP !!!!
-@Require(clearProjects=false,server=@org.jboss.tools.ui.bot.ext.config.Annotations.Server(type=ServerType.EAP))
+@Require(clearProjects=false,server=@org.jboss.tools.ui.bot.ext.config.Annotations.Server(type=ServerType.JbossAS))
 public class CreateProjectsWithServerTest extends SWTTestExt{
 	
 	@BeforeClass
@@ -381,6 +381,11 @@ public class CreateProjectsWithServerTest extends SWTTestExt{
 			}else if (readmeText.toLowerCase().contains("readme.htm")){
 				bot.clickButton("Finish");
 				assertTrue("Readme should have opened in Internal Browser", bot.activeEditor().getReference().getEditor(false).getClass().getName().contains("org.eclipse.ui.internal.browser.WebBrowserEditor"));
+				bot.activeView().close();
+			}else if (readmeText.contains("login.xml")){
+				bot.clickButton("Finish");
+				assertTrue("Cheat Sheets view should be opened right now", bot.activeView().getTitle().equals("Cheat Sheets"));
+				bot.activeView().close();
 			}
 		}else{
 			bot.clickButton("Finish");
