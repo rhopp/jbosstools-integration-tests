@@ -27,7 +27,7 @@ import org.jboss.tools.openshift.reddeer.requirement.OpenShiftConnectionRequirem
 import org.jboss.tools.openshift.reddeer.requirement.OpenShiftConnectionRequirement.RequiredBasicConnection;
 import org.jboss.tools.openshift.reddeer.utils.DatastoreOS3;
 import org.jboss.tools.openshift.reddeer.utils.OpenShiftLabel;
-import org.jboss.tools.openshift.reddeer.utils.ProjectNativeUtils;
+import org.jboss.tools.openshift.reddeer.utils.v3.OpenShift3NativeProjectUtils;
 import org.jboss.tools.openshift.reddeer.view.OpenShiftExplorerView;
 import org.jboss.tools.openshift.reddeer.view.resources.OpenShift3Connection;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class DeleteProjectTest {
 	public void setup(){
 		if (!projectExists) {
 			// TODO recreate project
-			ProjectNativeUtils.getOrCreateProject(DatastoreOS3.TEST_PROJECT, StringUtils.EMPTY, StringUtils.EMPTY,
+			OpenShift3NativeProjectUtils.getOrCreateProject(DatastoreOS3.TEST_PROJECT, StringUtils.EMPTY, StringUtils.EMPTY,
 					connectionReq.getConnection());
 		}
 	}

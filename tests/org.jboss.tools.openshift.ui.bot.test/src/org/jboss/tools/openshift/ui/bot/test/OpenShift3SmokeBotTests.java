@@ -88,23 +88,23 @@ import org.junit.runners.Suite.SuiteClasses;
 	CreateApplicationOnBuilderImageTest.class,
 	DeploymentTest.class,
 	
-//	// Application handling
-//	DeleteResourceTest.class,
-//	TriggerBuildTest.class,
-//	ImportApplicationTest.class,
-//	PortForwardingTest.class,
-//	LogsTest.class,
-//	EditResourcesTest.class,
-//
-//	// Advanced application testing
-// 	DeployEclipseProjectTest.class,	
-// 	DeployDockerImageTest.class,
-// 	CreateResourcesTest.class,
-//	
-//	// Server adapter
-//	ServerAdapterWizardHandlingTest.class,
-//	CreateServerAdapterTest.class,
-//	PublishChangesTest.class,
+	// Application handling
+	DeleteResourceTest.class,
+	TriggerBuildTest.class,
+	ImportApplicationTest.class,
+	PortForwardingTest.class,
+	LogsTest.class,
+	EditResourcesTest.class,
+
+	// Advanced application testing
+ 	DeployEclipseProjectTest.class,	
+ 	DeployDockerImageTest.class,
+ 	CreateResourcesTest.class,
+	
+	// Server adapter
+	ServerAdapterWizardHandlingTest.class,
+	CreateServerAdapterTest.class,
+	PublishChangesTest.class,
 	
 	// Clean up
 	CleanUpOS3.class
