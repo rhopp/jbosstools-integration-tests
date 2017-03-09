@@ -55,9 +55,19 @@ public class ServerAdapterWizardHandlingTest extends AbstractCreateApplicationTe
 
 	@BeforeClass
 	public static void waitTillApplicationIsRunning() {
-		new WaitUntil(new OpenShiftResourceExists(Resource.BUILD, "eap-app-1", ResourceState.COMPLETE),
+		try{
+			new WaitUntil(new OpenShiftResourceExists(Resource.BUILD, "eap-app-1", ResourceState.COMPLETE),
 				TimePeriod.getCustom(600));
-		new WaitUntil(new AmountOfResourcesExists(Resource.POD, 2), TimePeriod.LONG);
+		}catch (WaitTimeoutExpiredException ex){
+			System.out.println("prvni timeout");
+			throw ex;
+		}
+		try{
+			new WaitUntil(new AmountOfResourcesExists(Resource.POD, 2), TimePeriod.LONG);
+		}catch(WaitTimeoutExpiredException ex){
+			System.out.println("druhy timeout");
+			throw ex;
+		}
 		
 		new WaitWhile(new JobIsRunning(), TimePeriod.VERY_LONG);
 	}
