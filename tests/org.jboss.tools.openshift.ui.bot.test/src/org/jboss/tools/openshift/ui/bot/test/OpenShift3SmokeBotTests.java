@@ -19,6 +19,7 @@ import org.jboss.tools.openshift.reddeer.view.OpenShiftExplorerView;
 import org.jboss.tools.openshift.reddeer.view.resources.OpenShift3Connection;
 import org.jboss.tools.openshift.reddeer.view.resources.OpenShiftProject;
 import org.jboss.tools.openshift.ui.bot.test.application.v3.adapter.CreateServerAdapterTest;
+import org.jboss.tools.openshift.ui.bot.test.application.v3.adapter.DebuggingEAPAppTest;
 import org.jboss.tools.openshift.ui.bot.test.application.v3.adapter.PublishChangesTest;
 import org.jboss.tools.openshift.ui.bot.test.application.v3.adapter.ServerAdapterWizardHandlingTest;
 import org.jboss.tools.openshift.ui.bot.test.application.v3.advanced.CreateResourcesTest;
@@ -64,54 +65,55 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(RedDeerSuite.class)
 @SuiteClasses({	
 	// General
-	OCBinaryLocationTest.class,
-	
-	// Connection
-	OpenNewConnectionWizardTest.class,
-	CreateNewConnectionTest.class,
-	RemoveConnectionTest.class,
-	ConnectionWizardHandlingTest.class,
-	StoreConnectionTest.class,
-	ConnectionPropertiesTest.class,
-	
-	// Project
-	ProjectNameValidationTest.class,
-	LinkToCreateNewProjectTest.class,
-	CreateNewProjectTest.class,
-	DeleteProjectTest.class,
-	ResourcesTest.class,
-	ProjectPropertiesTest.class,
-	
-	// Application wizard handling
-	OpenNewApplicationWizardTest.class,
-	OpenNewApplicationWizardWithNoProjectTest.class,
-	NewApplicationWizardHandlingTest.class,
-	TemplateParametersTest.class,
-	LabelsTest.class,
-	BuilderImageApplicationWizardHandlingTest.class,
-	
-	// Creation of a new application
-	CreateApplicationFromTemplateTest.class,
-	CreateApplicationOnBuilderImageTest.class,
-	DeploymentTest.class,
-	
-	// Application handling
-	DeleteResourceTest.class,
-	TriggerBuildTest.class,
-	ImportApplicationTest.class,
-	PortForwardingTest.class,
-	LogsTest.class,
-	EditResourcesTest.class,
-
-	// Advanced application testing
- 	DeployEclipseProjectTest.class,	
- 	DeployDockerImageTest.class,
- 	CreateResourcesTest.class,
-	
-	// Server adapter
-	ServerAdapterWizardHandlingTest.class,
-	CreateServerAdapterTest.class,
-	PublishChangesTest.class
+//	OCBinaryLocationTest.class,
+//	
+//	// Connection
+//	OpenNewConnectionWizardTest.class,
+//	CreateNewConnectionTest.class,
+//	RemoveConnectionTest.class,
+//	ConnectionWizardHandlingTest.class,
+//	StoreConnectionTest.class,
+//	ConnectionPropertiesTest.class,
+//	
+//	// Project
+//	ProjectNameValidationTest.class,
+//	LinkToCreateNewProjectTest.class,
+//	CreateNewProjectTest.class,
+//	DeleteProjectTest.class,
+//	ResourcesTest.class,
+//	ProjectPropertiesTest.class,
+//	
+//	// Application wizard handling
+//	OpenNewApplicationWizardTest.class,
+//	OpenNewApplicationWizardWithNoProjectTest.class,
+//	NewApplicationWizardHandlingTest.class,
+//	TemplateParametersTest.class,
+//	LabelsTest.class,
+//	BuilderImageApplicationWizardHandlingTest.class,
+//	
+//	// Creation of a new application
+//	CreateApplicationFromTemplateTest.class,
+//	CreateApplicationOnBuilderImageTest.class,
+//	DeploymentTest.class,
+//	
+//	// Application handling
+//	DeleteResourceTest.class,
+//	TriggerBuildTest.class,
+//	ImportApplicationTest.class,
+//	PortForwardingTest.class,
+//	LogsTest.class,
+//	EditResourcesTest.class,
+//
+//	// Advanced application testing
+// 	DeployEclipseProjectTest.class,	
+// 	DeployDockerImageTest.class,
+// 	CreateResourcesTest.class,
+//	
+//	// Server adapter
+//	ServerAdapterWizardHandlingTest.class,
+//	CreateServerAdapterTest.class,
+	PublishChangesTest.class,
+	DebuggingEAPAppTest.class
 })
 public class OpenShift3SmokeBotTests {
 	
