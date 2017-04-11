@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -33,6 +35,7 @@ import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.junit.screenshot.CaptureScreenshotException;
 import org.jboss.reddeer.junit.screenshot.ScreenshotCapturer;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
+import org.jboss.reddeer.swt.api.Tree;
 import org.jboss.reddeer.swt.api.TreeItem;
 import org.jboss.reddeer.swt.impl.browser.InternalBrowser;
 import org.jboss.reddeer.swt.impl.button.OkButton;
@@ -206,6 +209,7 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 		DebugView debugView = new DebugView();
 		debugView.open();
 		TreeItem createHelloMessageDebugItem = null;
+		magic(debugView.getSelectedItem());
 		try {
 			ScreenshotCapturer.getInstance().captureScreenshot("pokus");
 		} catch (CaptureScreenshotException e) {
@@ -218,7 +222,11 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 			// the thread is not expanded -> expand it.
 			debugView.getSelectedItem().expand();
 			List<TreeItem> items = debugView.getSelectedItem().getItems();
-			createHelloMessageDebugItem = items.get(0);
+			try{
+				createHelloMessageDebugItem = items.get(0);
+			}catch (IndexOutOfBoundsException ex){
+				System.out.println("Uaaaa!");
+			}
 		} else {
 			throw new OpenShiftToolsException("Unable to locate correct thread in DebugView.");
 		}
@@ -226,21 +234,58 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 		assertTrue(createHelloMessageDebugItem.getText().contains("createHelloMessage"));
 	}
 
+	private void magic(TreeItem selectedItem) {
+		// get top item
+		Tree parent = selectedItem.getParent();
+		TreeItem remoteDebuggerTreeItem = parent.getItems().stream()
+				.filter(containsStringPredicate("Remote debugger"))
+				.findFirst().get();
+		
+		List<TreeItem> items = remoteDebuggerTreeItem.getItems();
+		TreeItem openJDKTreeItem = items.get(0);
+		assertTrue(openJDKTreeItem.getText().contains("OpenJDK"));
+		
+		TreeItem suspendedThreadTreeItem = openJDKTreeItem.getItems().stream()
+				.filter(containsStringPredicate("Suspended"))
+				.findFirst().get();
+		suspendedThreadTreeItem.select();
+		
+	}
+	
+	private Predicate<TreeItem> containsStringPredicate(String string){
+		return treeItem -> treeItem.getText().contains(string);
+	}
+
 	private void checkVariablesView() {
 		VariablesView variablesView = new VariablesView();
 		variablesView.open();
-		assertEquals("World", variablesView.getValue("name"));
-		assertTrue(variablesView.getValue("this").contains("HelloService"));
+		String nameValue = variablesView.getValue("name");
+		String thisValue = variablesView.getValue("this");
+		try {
+			ScreenshotCapturer.getInstance().captureScreenshot("this_should_contain_HelloService");
+		} catch (CaptureScreenshotException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		assertEquals("World", nameValue);
+		try{
+			assertTrue(variablesView.getValue("this").contains("HelloService"));
+		}catch(AssertionError e){
+			throw e;
+		}
 	}
 
 	private void triggerDebugSession() {
 		serverAdapter.select();
 		new ContextMenu("Show In", "Web Browser").select();
+		try{
 		new WaitUntil(new AbstractWaitCondition() {
 
 			@Override
 			public boolean test() {
-				BrowserEditor browserEditor = new BrowserEditor(new BaseMatcher<String>() {
+				BrowserEditor browserEditor=null;
+				try{
+				 browserEditor= new BrowserEditor(new BaseMatcher<String>() {
 
 					@Override
 					public boolean matches(Object arg0) {
@@ -253,8 +298,13 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 
 					}
 				});
+				}catch(CoreLayerException ex){
+					System.out.println("Core layer exception");
+					return false;
+				}
 				String text = browserEditor.getText();
 				if (text.contains("404")) {
+					System.out.println("Refreshing page");
 					browserEditor.refreshPage();
 					return false;
 				} else {
@@ -262,6 +312,9 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 				}
 			}
 		});
+		}catch(WaitTimeoutExpiredException e){
+			throw e;
+		}
 
 	}
 
