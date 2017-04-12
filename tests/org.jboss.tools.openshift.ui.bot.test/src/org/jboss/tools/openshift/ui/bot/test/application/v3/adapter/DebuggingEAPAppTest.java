@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -222,10 +223,10 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 			// the thread is not expanded -> expand it.
 			debugView.getSelectedItem().expand();
 			List<TreeItem> items = debugView.getSelectedItem().getItems();
-			try{
+			try {
 				createHelloMessageDebugItem = items.get(0);
-			}catch (IndexOutOfBoundsException ex){
-				System.out.println("Uaaaa!");
+			} catch (IndexOutOfBoundsException ex) {
+				throw ex;
 			}
 		} else {
 			throw new OpenShiftToolsException("Unable to locate correct thread in DebugView.");
@@ -237,22 +238,33 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 	private void magic(TreeItem selectedItem) {
 		// get top item
 		Tree parent = selectedItem.getParent();
-		TreeItem remoteDebuggerTreeItem = parent.getItems().stream()
-				.filter(containsStringPredicate("Remote debugger"))
+		TreeItem remoteDebuggerTreeItem = parent.getItems().stream().filter(containsStringPredicate("Remote debugger"))
 				.findFirst().get();
-		
+
 		List<TreeItem> items = remoteDebuggerTreeItem.getItems();
 		TreeItem openJDKTreeItem = items.get(0);
 		assertTrue(openJDKTreeItem.getText().contains("OpenJDK"));
-		
+		// wait until we can see the suspended thread
+		try {
+			new WaitUntil(new AbstractWaitCondition() {
+
+				@Override
+				public boolean test() {
+					Optional<TreeItem> suspendedTreeItemOptional = openJDKTreeItem.getItems().stream()
+							.filter(containsStringPredicate("Suspended")).findFirst();
+					return suspendedTreeItemOptional.isPresent();
+				}
+			});
+		} catch (WaitTimeoutExpiredException e) {
+			throw e;
+		}
 		TreeItem suspendedThreadTreeItem = openJDKTreeItem.getItems().stream()
-				.filter(containsStringPredicate("Suspended"))
-				.findFirst().get();
+				.filter(containsStringPredicate("Suspended")).findFirst().get();
 		suspendedThreadTreeItem.select();
-		
+
 	}
-	
-	private Predicate<TreeItem> containsStringPredicate(String string){
+
+	private Predicate<TreeItem> containsStringPredicate(String string) {
 		return treeItem -> treeItem.getText().contains(string);
 	}
 
@@ -268,9 +280,9 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 			e1.printStackTrace();
 		}
 		assertEquals("World", nameValue);
-		try{
+		try {
 			assertTrue(variablesView.getValue("this").contains("HelloService"));
-		}catch(AssertionError e){
+		} catch (AssertionError e) {
 			throw e;
 		}
 	}
@@ -278,41 +290,56 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 	private void triggerDebugSession() {
 		serverAdapter.select();
 		new ContextMenu("Show In", "Web Browser").select();
-		try{
-		new WaitUntil(new AbstractWaitCondition() {
+		try {
+			new WaitUntil(new AbstractWaitCondition() {
 
-			@Override
-			public boolean test() {
-				BrowserEditor browserEditor=null;
-				try{
-				 browserEditor= new BrowserEditor(new BaseMatcher<String>() {
+				@Override
+				public boolean test() {
+					BrowserEditor browserEditor = null;
+					try {
+						browserEditor = new BrowserEditor(new BaseMatcher<String>() {
 
-					@Override
-					public boolean matches(Object arg0) {
+							@Override
+							public boolean matches(Object arg0) {
+								return true;
+							}
+
+							@Override
+							public void describeTo(Description arg0) {
+								// TODO Auto-generated method stub
+
+							}
+						});
+					} catch (CoreLayerException ex) {
+						System.out.println("Core layer exception");
+						return false;
+					}
+					String text = browserEditor.getText();
+					if (text.contains("Unable to load page") || text.contains("404")) {
+						System.out.println("Refreshing page");
+						try {
+							ScreenshotCapturer.getInstance().captureScreenshot("Browser_should_be_ready");
+						} catch (CaptureScreenshotException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						new ServersView().open();
+						serverAdapter.select();
+						new ContextMenu("Show In", "Web Browser").select();
+						return false;
+					} else {
+						System.out.println("Browser je ready.");
+						try {
+							ScreenshotCapturer.getInstance().captureScreenshot("Browser_should_be_ready");
+						} catch (CaptureScreenshotException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						return true;
 					}
-
-					@Override
-					public void describeTo(Description arg0) {
-						// TODO Auto-generated method stub
-
-					}
-				});
-				}catch(CoreLayerException ex){
-					System.out.println("Core layer exception");
-					return false;
 				}
-				String text = browserEditor.getText();
-				if (text.contains("404")) {
-					System.out.println("Refreshing page");
-					browserEditor.refreshPage();
-					return false;
-				} else {
-					return true;
-				}
-			}
-		});
-		}catch(WaitTimeoutExpiredException e){
+			});
+		} catch (WaitTimeoutExpiredException e) {
 			throw e;
 		}
 
