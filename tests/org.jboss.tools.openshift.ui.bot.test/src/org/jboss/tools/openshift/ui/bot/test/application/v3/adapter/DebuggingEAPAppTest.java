@@ -222,17 +222,32 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 		} else if (debugView.getSelectedText().contains("Suspended")) {
 			// the thread is not expanded -> expand it.
 			debugView.getSelectedItem().expand();
+			// wait for threads to show up
+			new WaitUntil(new AbstractWaitCondition() {
+
+				@Override
+				public boolean test() {
+					return debugView.getSelectedItem().getItems().size() > 0;
+				}
+			});
 			List<TreeItem> items = debugView.getSelectedItem().getItems();
 			try {
-				createHelloMessageDebugItem = items.get(0);
-			} catch (IndexOutOfBoundsException ex) {
+				createHelloMessageDebugItem = items
+						.stream().peek(ti -> System.out.println(ti.getText()))
+						.filter(ti -> ti.getText().contains("createHelloMessage"))
+						.findFirst().get();
+			} catch (NoSuchElementException ex) {
 				throw ex;
 			}
 		} else {
 			throw new OpenShiftToolsException("Unable to locate correct thread in DebugView.");
 		}
 		createHelloMessageDebugItem.select();
-		assertTrue(createHelloMessageDebugItem.getText().contains("createHelloMessage"));
+		try {
+			assertTrue(createHelloMessageDebugItem.getText().contains("createHelloMessage"));
+		} catch (AssertionError e) {
+			throw e;
+		}
 	}
 
 	private void magic(TreeItem selectedItem) {
@@ -265,26 +280,31 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 	}
 
 	private Predicate<TreeItem> containsStringPredicate(String string) {
-		return treeItem -> treeItem.getText().contains(string);
+		try{
+			return treeItem -> treeItem.getText().contains(string);
+		}catch(CoreLayerException e){
+			throw e;
+		}
 	}
 
 	private void checkVariablesView() {
 		VariablesView variablesView = new VariablesView();
 		variablesView.open();
-		String nameValue = variablesView.getValue("name");
-		String thisValue = variablesView.getValue("this");
-		try {
-			ScreenshotCapturer.getInstance().captureScreenshot("this_should_contain_HelloService");
-		} catch (CaptureScreenshotException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		assertEquals("World", nameValue);
-		try {
-			assertTrue(variablesView.getValue("this").contains("HelloService"));
-		} catch (AssertionError e) {
-			throw e;
-		}
+		//wait for variables to have correct value
+		new WaitUntil(new AbstractWaitCondition() {
+			
+			@Override
+			public boolean test() {
+				return variablesView.getValue("name").equals("World");
+			}
+		});
+		new WaitUntil(new AbstractWaitCondition() {
+			
+			@Override
+			public boolean test() {
+				return variablesView.getValue("this").contains("HelloService");
+			}
+		});
 	}
 
 	private void triggerDebugSession() {
@@ -405,7 +425,11 @@ public class DebuggingEAPAppTest extends AbstractCreateApplicationTest {
 			}
 		});
 
-		new ContextMenu("Change Value...").select();
+		try {
+			new ContextMenu("Change Value...").select();
+		} catch (CoreLayerException e) {
+			throw e;
+		}
 		new DefaultShell("Change Object Value");
 		new DefaultStyledText().setText(newValue);
 		new OkButton().click();
