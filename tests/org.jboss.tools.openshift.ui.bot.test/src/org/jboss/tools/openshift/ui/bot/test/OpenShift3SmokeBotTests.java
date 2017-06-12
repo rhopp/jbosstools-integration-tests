@@ -85,12 +85,12 @@ import org.junit.runners.Suite.SuiteClasses;
 	
 	// Application wizard handling
 	OpenNewApplicationWizardTest.class,
-	OpenNewApplicationWizardWithNoProjectTest.class,
+//	OpenNewApplicationWizardWithNoProjectTest.class,
 	NewApplicationWizardHandlingTest.class,
 	TemplateParametersTest.class,
 	LabelsTest.class,
 	BuilderImageApplicationWizardHandlingTest.class,
-//	
+	
 //	// Creation of a new application
 //	CreateApplicationFromTemplateTest.class,
 //	CreateApplicationOnBuilderImageTest.class,
@@ -116,7 +116,7 @@ import org.junit.runners.Suite.SuiteClasses;
 //	PublishChangesTest.class
 })
 public class OpenShift3SmokeBotTests {
-	
+		
 	@AfterClass
 	public static void cleanUp() {
 		OpenShiftExplorerView explorer = new OpenShiftExplorerView();
